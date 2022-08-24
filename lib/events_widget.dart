@@ -176,6 +176,18 @@ class UpdateBlockState extends State<UpdateBlockWidget> {
     }
   }
 
+  @override
+  didUpdateWidget(TestStatefulWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (datas != null) {
+      for (var i = 0; i < datas!.length; i++) {
+        var data = datas![i].data;
+        data.on(updateIntBlock, onUpdateIntBlock);
+        data.on(updateStringBlock, onUpdateStringBlock);
+      }
+    }
+  }
+
   List<UpdateBlockWidgetData>? createData() {
     return widget.datas;
   }
@@ -218,7 +230,8 @@ class UpdateBlockState extends State<UpdateBlockWidget> {
   }
 
   void onUpdateStringBlock(Object sender, Object type, Object? data) {
-    if (data != null && _isWatchString(sender as EventDispatcher, data as int)) {
+    if (data != null &&
+        _isWatchString(sender as EventDispatcher, data as int)) {
       _doEvent = false;
       SchedulerBinding.instance.scheduleFrameCallback((timeStamp) {
         if (_doEvent) {
