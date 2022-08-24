@@ -177,7 +177,7 @@ class UpdateBlockState extends State<UpdateBlockWidget> {
   }
 
   @override
-  didUpdateWidget(TestStatefulWidget oldWidget) {
+  didUpdateWidget(UpdateBlockWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (datas != null) {
       for (var i = 0; i < datas!.length; i++) {
