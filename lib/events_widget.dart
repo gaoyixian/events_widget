@@ -25,12 +25,36 @@ abstract class _EventsState<T extends _EventsWidget> extends State<T> {
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init(){
+    unint();
     datas = createData();
     if (datas != null) {
       for (var i = 0; i < datas!.length; i++) {
         _addListener(datas![i]);
       }
     }
+  }
+
+  void unint(){
+    if (datas != null) {
+      for (var i = 0; i < datas!.length; i++) {
+        _removeListener(datas![i]);
+      }
+    }
+    datas = null;
+  }
+
+  @override
+  didUpdateWidget(T oldWidget) {
+    
+    if(oldWidget.datas == this.widget.datas || oldWidget.key == this.widget.key){
+      return;
+    }
+    init();
+    super.didUpdateWidget(oldWidget);
   }
 
   List<EventsWidgetData>? createData() {
@@ -73,12 +97,7 @@ abstract class _EventsState<T extends _EventsWidget> extends State<T> {
 
   @override
   void dispose() {
-    if (datas != null) {
-      for (var i = 0; i < datas!.length; i++) {
-        _removeListener(datas![i]);
-      }
-    }
-    datas = null;
+    unint();
     super.dispose();
   }
 }
@@ -166,6 +185,11 @@ class UpdateBlockState extends State<UpdateBlockWidget> {
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init(){
+    uninit();
     datas = createData();
     if (datas != null) {
       for (var i = 0; i < datas!.length; i++) {
@@ -176,16 +200,23 @@ class UpdateBlockState extends State<UpdateBlockWidget> {
     }
   }
 
-  @override
-  didUpdateWidget(UpdateBlockWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void uninit(){
     if (datas != null) {
       for (var i = 0; i < datas!.length; i++) {
         var data = datas![i].data;
-        data.on(updateIntBlock, onUpdateIntBlock);
-        data.on(updateStringBlock, onUpdateStringBlock);
+        data.off(updateIntBlock, onUpdateIntBlock);
+        data.off(updateStringBlock, onUpdateStringBlock);
       }
     }
+  }
+
+  @override
+  didUpdateWidget(UpdateBlockWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget == this.widget){
+      return;
+    }
+    init();
   }
 
   List<UpdateBlockWidgetData>? createData() {
@@ -250,13 +281,7 @@ class UpdateBlockState extends State<UpdateBlockWidget> {
 
   @override
   void dispose() {
-    if (datas != null) {
-      for (var i = 0; i < datas!.length; i++) {
-        var data = datas![i].data;
-        data.off(updateIntBlock, onUpdateIntBlock);
-        data.off(updateStringBlock, onUpdateStringBlock);
-      }
-    }
+    uninit();
     super.dispose();
   }
 }
